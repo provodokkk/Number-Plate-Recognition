@@ -1,5 +1,8 @@
+import numpy as np
 from ultralytics import YOLO
 import cv2
+
+from sort.sort import *
 
 from coco_classnames import Classnames
 
@@ -10,6 +13,8 @@ coco_model = YOLO('yolov8n.pt')
 licence_plate_detector = YOLO('./models/license_plate_detector.pt')
 
 cap = cv2.VideoCapture('./assets/sample.mp4')
+
+mot_tracker = Sort()
 
 # read frames
 ret = True
@@ -29,3 +34,6 @@ while ret:
 
             if int(class_id) in vehicles:
                 detected_vehicles.append(data)
+
+        # track vehicles
+        track_ids = mot_tracker.update(np.asarray(detected_vehicles))
